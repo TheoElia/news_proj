@@ -1,0 +1,284 @@
+Transcript of Tutorial 
+
+NOTE: For easy access, do all of these in the Desktop directory. So that you can easily open the project.
+
+I will like everyone to get their machines ready before we do this. I will be giving some background to django as we get ready.
+ 
+
+Introduction to Django
+
+Django is a web framework developed for python developers to have it easy developing fully functional and production ready web applications. 
+
+Django comes out of the box with database management, a fully functional and customizable admin site. The web framework implements python's best practices and teaches beginner level python programmers how to organize their files for easy access and manipulation. 
+
+Even the competent programmers who never really learnt how to arrange their files grasp these concepts just through one web app development with django.
+The framework has grown over the years so much that many packages have been developed around it to ease development. 
+
+This makes development with django not just easy but fun and once you get the basic concepts, you are good to go.  Its principles such as DRY (Don't Repeat Yourself) make development so smooth and easy for even in coming developers.
+What can you build with django?
+
+Basically, any web application you can conceive can be built with django and even progressive web applications. Not leaving out web APIs.
+Requirements for the course
+
+⌨ Basic knowledge of python maybe required.
+⌨ A general knowledge of programming is actually required.
+
+Setting up django
+
+In order to use django, you will need python, pip, and virtual environment on your machine. We will go step by step into the details of installing these software on our systems. I will be considering two different systems primarily: Windows and Linux systems.
+
+Windows Installation
+
+Check for Python
+
+The simplest way to test for a Python installation on your Windows server is to open a command prompt (click on the Windows icon and type cmd, then click on the command prompt icon). 
+
+Once a command prompt window opens, type python and press Enter. If Python is installed correctly, you should see output similar to what is shown below:
+
+Python 3.7.0 (v3.7.0:1bf9cc5093, Jun 27 2018, 04:59:51) [MSC v.1914 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+If you receive a message like:
+
+Python is not recognized as an internal or external command, operable program or batch file.
+
+This means Python is either not installed or the system variable path hasn’t been set.
+
+You’ll need to either launch Python from the folder in which it is installed or adjust your
+system variables to allow Python to be launched from any location.
+
+Then we need to install python by ourselves.
+
+Download Python
+
+
+To install python on your windows, visit https://www.python.org and download python ( preferably, version 3.6 or more ), while installing, please make sure you mark the global option. 
+
+This  will make sure it is installed across your computer, so you could run it from anywhere.
+Now if you type python in your command line, it should show the appropriate python version you downloaded alongside some other messages as I said earlier
+Install pip
+
+
+Usually Python3 comes with pip preinstalled. If you get an error "pip command not found", use the following command to install pip:
+
+Download get-pip.py, make sure you're saving file to Desktop
+
+In your Command Prompt navigate to Desktop:
+
+cd Desktop
+
+Execute get-pip.py:
+
+python get-pip.py
+
+Now pip should work system wide when you type pip in the command line
+Installing virtualenv
+
+In your Command Prompt enter:
+
+pip install virtualenv
+Now that should install virtualenv
+Let's create a news application project. We need to create a directory, call it whatever you want
+Here is the command:
+
+mkdir news_project
+Launch virtualenv
+
+In your Command Prompt navigate to your project:
+
+cd your_project_name
+
+Within your project do this:
+
+virtualenv myenv
+
+Activate your virtualenv:
+
+on Windows, virtualenv creates a batch file
+
+\myenv\Scripts\activate.bat
+
+to activate virtualenv on Windows, activate script is in the Scripts folder :
+
+\path\to\myenv\Scripts\activate
+
+
+
+Example:
+
+C:\Users\'Username'\venv\Scripts\activate.bat
+
+
+Congratulations, you have finished installing python, pip and virtualenv
+
+
+PIP
+
+PIP is a package managing tool for python, it is used to install python packages or codes written by other people so that we can use them our codes.
+
+VIRTUALENV
+
+This is used to create a whole new environment within your computer, it makes sure that whatever is happening within that environment does not affect the whole system. 
+
+Think of it as sound proof room, where you can enter and shout but no one within the main house will hear you.
+
+We installed our own and named it myenv
+Installation On Linux
+
+Simply open the linux terminal, you can use these shortcut keys together ctrl + alt + t. Your terminal should have opened.
+
+Type this to check if python is not already on your system. This is because Linux distributions usually come with python pre-installed.
+Enter:
+
+python or python3,
+
+if you get any of the following:
+
+Python 2.7.15 (default, May  1 2018, 05:55:50) 
+
+[GCC 7.3.0] on linux2
+
+Type "help", "copyright", "credits" or "license" for more information.
+
+>>> 
+
+Or 
+
+Python 3.6.5 (default, May 11 2018, 13:30:17) 
+
+[GCC 7.3.0] on linux
+
+Type "help", "copyright", "credits" or "license" for more information.
+
+>>> 
+
+
+
+Then you do not need to worry about installing python. If not, use this commands to get python.
+
+sudo apt-get install python3
+
+Installing pip
+
+Pip is a command line tool that allows you to install software packages written in Python. 
+
+sudo apt install python3-pip
+
+The above command should get pip installed for you
+To check for pip version, enter:
+
+pip3 --version
+Congratulations as well, Linux users.
+
+We can now use pip to install django and other packages that will be required to make our application work.
+Now let's install Django
+
+To install django, enter:
+
+pip3 install django
+
+That will install the latest version of django for you.
+
+We will also require other packages such as whitenoise, these will aid in our development process.
+
+To install whitenoise
+
+pip3 install whotenoise
+
+After successful installation, let's move on to now creating our django project.
+
+To start a new django project, enter:
+
+django-admin startproject news_proj
+
+Django will automatically create a project for you with the necessary folders. You will be coding in these folders.
+
+
+You should get a project folder which has the same name you gave while typing the command (django-admin startproject news_proj) in the current directory in which you are,
+
+in this scenario, the name will be news_proj
+
+
+For easy access, do all of these in the Desktop directory. So that you can easily open the project.
+
+
+My virtual environment lives in a folder i created call projects.
+
+So i entered:
+
+cd projects
+
+and then I activated my environment like this:
+
+source myenv/bin/activate
+
+which is the way you do it on Linux, myenv is my virtual environment's name
+I then ran the django command that will create a new django project like this:
+
+django-admin startproject news_proj
+
+news_proj is the name I gave to the project as suggested
+
+Django then created a folder called news_proj for me. 
+It did it in the directory I was before executing the django-admin command. 
+Which was my home directory. For ease, let yours be Desktop.
+
+Now opening the folder, 
+There are two items, another folder with the same project name and then a manage.py file.
+
+
+Now opening the second folder, you should have these 4 files in it.
+These files control the most basic aspect of django applications. 
+
+_init_.py
+This is an empty file, required to make our project importable.
+
+
+
+settings.py
+This file contains all the project settings needed to keep the project running, django has already generated the necessary codes in it for you. Your django secret key is in it as well.
+
+
+
+urls.py
+This file will serve as the entry point in terms of urls, for users, this is where we will define the basic urls people can go to if they want to visit a specific application in our project.
+
+
+
+wsgi.py
+This file contains the necessary establishment for web application development. You do not need to touch this file throughout your development.
+
+manage.py
+
+This file will be used most for running our project database migrations, and running our server.
+
+If we have all gotten this far then congratulations. 
+We have our project setup successfully and to see that it is working in our browser, let's follow these:
+
+
+We enter the project from the command line:
+
+cd news_proj
+
+And then we run our server for Windows:
+
+python manage.py runserver 
+
+Run server for Linux:
+
+python3 manage.py runserver
+
+You should see the following output or similar one
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 17 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+
+June 01, 2019 - 19:43:36
+Django version 2.2, using settings 'news_proj.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+Open your web browser and enter http://127.0.0.1:8000/
