@@ -1,23 +1,34 @@
-Transcript of Tutorial 
+##############################################################################################
 
-NOTE: For easy access, do all of these in the Desktop directory. So that you can easily open the project.
+##############################################################################################
+Transcript of Tutorial (DAY 1)
 
-I will like everyone to get their machines ready before we do this. I will be giving some background to django as we get ready.
+NOTE: For easy access, do all of these in the Desktop directory. So that you can easily open 
+the project.
+
+I will like everyone to get their machines ready before we do this. I will be giving some 
+background to django as we get ready.
  
 
 Introduction to Django
 
-Django is a web framework developed for python developers to have it easy developing fully functional and production ready web applications. 
+Django is a web framework developed for python developers to have it easy developing fully 
+functional and production ready web applications. 
 
-Django comes out of the box with database management, a fully functional and customizable admin site. The web framework implements python's best practices and teaches beginner level python programmers how to organize their files for easy access and manipulation. 
+Django comes out of the box with database management, a fully functional and customizable 
+admin site. The web framework implements python's best practices and teaches beginner level python programmers how to organize their files for easy access and manipulation. 
 
-Even the competent programmers who never really learnt how to arrange their files grasp these concepts just through one web app development with django.
-The framework has grown over the years so much that many packages have been developed around it to ease development. 
+Even the competent programmers who never really learnt how to arrange their files grasp these 
+concepts just through one web app development with django.
+The framework has grown over the years so much that many packages have been developed around 
+it to ease development. 
 
-This makes development with django not just easy but fun and once you get the basic concepts, you are good to go.  Its principles such as DRY (Don't Repeat Yourself) make development so smooth and easy for even in coming developers.
+This makes development with django not just easy but fun and once you get the basic concepts, 
+you are good to go.  Its principles such as DRY (Don't Repeat Yourself) make development so smooth and easy for even in coming developers.
 What can you build with django?
 
-Basically, any web application you can conceive can be built with django and even progressive web applications. Not leaving out web APIs.
+Basically, any web application you can conceive can be built with django and even progressive 
+web applications. Not leaving out web APIs.
 Requirements for the course
 
 ⌨ Basic knowledge of python maybe required.
@@ -25,13 +36,16 @@ Requirements for the course
 
 Setting up django
 
-In order to use django, you will need python, pip, and virtual environment on your machine. We will go step by step into the details of installing these software on our systems. I will be considering two different systems primarily: Windows and Linux systems.
+In order to use django, you will need python, pip, and virtual environment on your machine. 
+We will go step by step into the details of installing these software on our systems. 
+I will be considering two different systems primarily: Windows and Linux systems.
 
 Windows Installation
 
 Check for Python
 
-The simplest way to test for a Python installation on your Windows server is to open a command prompt (click on the Windows icon and type cmd, then click on the command prompt icon). 
+The simplest way to test for a Python installation on your Windows server is to open a 
+command prompt (click on the Windows icon and type cmd, then click on the command prompt icon). 
 
 Once a command prompt window opens, type python and press Enter. If Python is installed correctly, you should see output similar to what is shown below:
 
@@ -51,14 +65,20 @@ Then we need to install python by ourselves.
 Download Python
 
 
-To install python on your windows, visit https://www.python.org and download python ( preferably, version 3.6 or more ), while installing, please make sure you mark the global option. 
+To install python on your windows, visit https://www.python.org and download 
+python ( preferably, version 3.6 or more ), while installing, please make sure 
+you mark the global option. 
 
 This  will make sure it is installed across your computer, so you could run it from anywhere.
-Now if you type python in your command line, it should show the appropriate python version you downloaded alongside some other messages as I said earlier
+Now if you type python in your command line, it should show the appropriate 
+python version you downloaded alongside some other messages as I said earlier
 Install pip
 
 
-Usually Python3 comes with pip preinstalled. If you get an error "pip command not found", use the following command to install pip:
+Usually Python3 comes with pip preinstalled. If you get an error 
+"pip command not found", 
+
+use the following command to install pip:
 
 Download get-pip.py, make sure you're saving file to Desktop
 
@@ -282,3 +302,454 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 
 Open your web browser and enter http://127.0.0.1:8000/
+
+
+#################################################################################################
+
+#################################################################################################
+
+
+Tutorial (DAY 2)
+
+We will now move on to creating specific applications within this django 
+project, but so far, you have done marvelously well.
+
+
+
+Applications In Django Project
+
+You could view the project as your whole web application, 
+and within this web application will be different parts accounts for registering, 
+logging user, resetting passwords among others.
+
+We could also have another part for managing our news, that is, creating, 
+editing and updating, deleting, and viewing our actual news contents. 
+These various parts are what we refer to in django as apps.
+
+So different apps will handle different parts of the whole web application 
+but they will seamlessly work together on the same domain, in this case, our 
+domain is our localhost: http://127.0.0.1:8000/. In a production case, your domain 
+name could have been www.pywe.org.
+
+
+#####################################################################################
+
+Creating apps within django project
+
+
+For our project, we plan to at least have some people registered 
+even if not as users, as people who can create content for our site. 
+We will therefore implement an accounts app, which will take care of
+
+our user management. If later on we want our users to register 
+to read our news, we could do that.
+
+
+
+Now, let's get to code. Get back to your command line 
+and do CTRL + C to stop the server running.
+
+Now enter the following command to create a new application.
+
+
+python manage.py startapp accounts
+With just that command, django has generated a new folder wihin your project root folder called accounts and within this new folder will be the following files and folder:
+ And here are the various files and folder that are in that folder:
+
+
+#####################################################################################
+Migrations Folder
+This folder will initially contain __init__.py file, but later on will record all database transactions we will be making as files at each point in time that we run a command call makemigrations, which we ran earlier before serving our project the first time.
+
+
+
+__init__.py
+Another empty file required in our accounts folder to make the accounts folder importable in other parts of the application
+
+
+
+admin.py
+This will be used to control the admin part of our app on the admin site which currently run on our domain/admin
+
+
+
+apps.py
+A file you would not need to worry about, will contain the name of our app for migration purposes which happen under the hood all by django.
+
+
+
+models.py
+This file will be used to define our database table structures all in the form of simple python classes. Django will handle the rest.
+
+
+
+tests.py
+This file is used to run tests on our application, we might probably never use it.
+
+
+
+views.py
+This may become our most edited file, we shall use this to control what is displayed to our users.
+
+
+
+urls.py
+This file may not have been automatically generated by django for you, but we will 
+create it ourselves in this folder to listen to requests that come in specifically to 
+this part of the app. So basically requests that come in on domain/accounts/ will be 
+listened to from here. Go head and create this file in the folder right now.
+
+
+
+forms.py
+Go ahead and create this file also, we shall be using it to define our HTML forms.
+
+#####################################################################################
+
+Our Flow for Creating and working on applications.
+
+In order to be able to use django with speed, I will introduce to you my 
+own flow of how I typically create a new django app within my project. 
+Following this pattern for two to three apps in your project will help 
+you have it at your finger tips.
+
+#####################################################################################
+
+We shall first write models, in our models.py file. This will describe 
+our database structure, that is, the database tables, the various columns 
+in those tables and their specific details.
+We shall then go to our settings.py file and look for installed_apps, and 
+add our newest app to the installed app, in this case "accounts", should be added on the last line of the installed apps.  Like this:
+INSTALLED_APPS = [
+    'django.contrib.admin',
+
+    'django.contrib.auth',
+
+    'django.contrib.contenttypes',
+
+    'django.contrib.sessions',
+
+    'django.contrib.messages',
+
+    'django.contrib.staticfiles',
+
+    'accounts',
+]
+
+#####################################################################################
+
+We shall then go to our terminals and run makemigrations, and migrate commands, 
+which will first create migration files in our Migrations folder, replicating 
+what we have defined in our models in a way that can be executed in our database, 
+and then actually migrate these changes, that is, create tables and their various 
+columns for us. This is one of the things that make django powerful, you do not 
+need to worry about writing your own sql commands. They are all handled.
+
+#####################################################################################
+
+We shall then go over to our views.py and import the models we just created and 
+then use them appropriately in writing either class based or function based views 
+which will help display appropriate HTML pages for our users.
+
+#####################################################################################
+
+
+After that, we shall go to our urls.py and define where exactly we 
+would want our users to go to use these views we wrote above. So 
+if we want our users to go to /news to get all our available news, we will define it here.
+
+#####################################################################################
+
+You might have noticed that within the flow, I mentioned HTML pages but we 
+have not made mention of creating any. We shall create that by creating 
+these sequence of folders in our accounts folder. We shall create a folder 
+named templates in our accounts folder and then create another folder within 
+the templates folder called accounts and then our HTML page that we want our 
+users to see within this accounts folder. So we shall have 
+accounts/templates/accounts/index.html
+
+#####################################################################################
+
+If we need some control at our admin page over this app, then we will visit 
+admin.py to make the necessary changes.
+
+#####################################################################################
+
+If our models require creation to populate our tables, then we will 
+head over forms.py which we created earlier and define the necessary forms. 
+Django's DRY as I mentioned earlier, makes sure that, you do not have create HTML forms for creating say news after defining your models. Django will do this for you using the forms.py and then your HTML page could have the news creation form, with validation well implemented just by how you defined your models.
+
+#####################################################################################
+
+
+With the above flow in mind, let's try to have a metal image of what goes 
+on every time we need to create a new app within our django project. 
+
+We define models which represent our database tables, we add the app 
+to our project in the settings folder, and then run migrations to make 
+sure the new models we wrote have been recorded and created by django. 
+We then go and import these models in our views and the use them appropriately 
+and call what we have written in our views.py in our urls.py to define where our 
+users need to go to have that particular views work. We also write the necessarry 
+HTML file that will be displayed to our users when they visit the provided url.
+
+#####################################################################################
+
+Finally, if the particular model needs creation, then we create a form for 
+it in our forms.py and import these in our views as well. And if we want 
+admin control over the app, then we register it in our admin.py file. 
+Every application you create in django will follow these steps, not in 
+the same order except for writing your models and migrations, which must be done first.
+
+#####################################################################################
+
+Enough of the theory, Let's apply all of that:
+
+Go to settings.py and look for :
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+
+    'django.contrib.auth',
+
+    'django.contrib.contenttypes',
+
+    'django.contrib.sessions',
+
+    'django.contrib.messages',
+
+    'django.contrib.staticfiles',
+
+]
+
+Please add 'accounts', to it so that it lloks like this:
+
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+
+    'django.contrib.auth',
+
+    'django.contrib.contenttypes',
+
+    'django.contrib.sessions',
+
+    'django.contrib.messages',
+
+    'django.contrib.staticfiles',
+
+    'accounts',
+]
+
+#####################################################################################
+
+Open your project in your own preferred Editor. 
+We will write our first models here. A user model that 
+will be used to create database tables for creating new users in the project.
+
+Now let your models.py contain the following:
+
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+import django
+
+# Create your models here.
+
+class CustomUser(AbstractUser):
+    # add additional fields in here
+    email = models.EmailField(blank=False)
+    is_staff = models.BooleanField( default=True)
+    date_joined = models.DateTimeField(default=django.utils.timezone.now())
+    is_superuser = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    age = models.IntegerField(null=True)
+
+#####################################################################################
+
+This is what is going on here. We have inherited AbstactUser, 
+which is a django class. We have created our own class naming it CustomUser. 
+Our class which is CustomUser has direct access to django's AbstarctUser class. 
+All the fields I have defined here are already defined in the AbstractUser class by django. 
+I only wrote them out again because I wanted to make some changes to some of the fields.
+
+For example: I wanted the date_joined to be the time the person is created.
+
+#####################################################################################
+
+I did not define username, first_name, last_name, and some other fields, 
+but in time you will see that they will all be part of our 
+tables because django has already defined all of them for us.
+
+What this means is that, we could have defined our CustomUser model like this:
+
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+import django
+
+# Create your models here.
+
+class CustomUser(AbstractUser):
+    # add additional fields in here
+    pass
+
+And we would still have everything right in place.
+
+#####################################################################################
+
+We have an existing class, we call it the parent class, then we have 
+a class that is inheriting from the parent class, this is called the child class. 
+So the child class gets everything from the parent class 
+and can choose to modify those things it inherited and even add more to them.
+
+#####################################################################################
+
+There are some interesting stuff with the field definitions. 
+
+specifying default argument means, you want that particular 
+value to be the default value for that field.
+blank is used to tell whether the field is required to be entered whenever 
+creating a new user. So on an HTML form, 
+if you do not fill that particular field, the form will not submit
+
+#####################################################################################
+
+Now I would want you to go to your command line and let's execute our SQL queries.
+
+For Windows:
+
+python manage.py makemigrations accounts
+
+For Linux:
+
+python3 manage.py makemigrations accounts
+
+Now you should encounter the following Errors:
+
+ERRORS:
+accounts.CustomUser.groups: (fields.E304) Reverse accessor for 'CustomUser.groups' clashes with reverse accessor for 'User.groups'.
+	HINT: Add or change a related_name argument to the definition for 'CustomUser.groups' or 'User.groups'.
+accounts.CustomUser.user_permissions: (fields.E304) Reverse accessor for 'CustomUser.user_permissions' clashes with reverse accessor for 'User.user_permissions'.
+	HINT: Add or change a related_name argument to the definition for 'CustomUser.user_permissions' or 'User.user_permissions'.
+auth.User.groups: (fields.E304) Reverse accessor for 'User.groups' clashes with reverse accessor for 'CustomUser.groups'.
+	HINT: Add or change a related_name argument to the definition for 'User.groups' or 'CustomUser.groups'.
+auth.User.user_permissions: (fields.E304) Reverse accessor for 'User.user_permissions' clashes with reverse accessor for 'CustomUser.user_permissions'.
+	HINT: Add or change a related_name argument to the definition for 'User.user_permissions' or 'CustomUser.user_permissions'.
+
+#####################################################################################
+
+This error is occurring because we have switched django's existing user model 
+to our own called CustomUser model without telling the system about it. 
+To resolve this issue, simply go to your settings.py file and put the following line of code any where, on its own line:
+
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+This tells django that we want to use CustomUser from accounts as a new User model.
+
+#####################################################################################
+
+Now running migraions again should be fine:
+
+For Windows:
+
+python manage.py makemigrations accounts
+
+For Linux:
+
+python3 manage.py makemigrations accounts
+
+This only creates a file in our Migrations folder so we will need to acctually migrate for the sql queries to be executed.
+
+For Windows:
+
+python manage.py migrate accounts
+
+For Linux:
+
+python3 manage.py migrate accounts
+
+#####################################################################################
+
+Now, do a general makemigrations:
+
+For Windows:
+
+python manage.py makemigrations
+
+For Linux:
+
+python3 manage.py makemigrations
+
+And a general migrate:
+
+For Windows:
+
+python manage.py migrate 
+
+For Linux:
+
+python3 manage.py migrate 
+
+You should see some messages telling you about migrations being applied.
+
+Congratulations!!! You have migrated successfully.
+
+#####################################################################################
+
+
+Now go to your admin.py file within the accounts folder and register the CustomUser model.
+
+Your admin file should contain this code:
+
+
+from django.contrib import admin
+from .models import CustomUser
+
+# Register your models here.
+
+admin.site.register(CustomUser)
+
+#####################################################################################
+
+Now, let's create our selves as superusers, who have access to everything.
+To do that, use the following coomand:
+
+
+Windows:
+python manage.py createsuperuser
+
+Linux:
+python3 manage.py createsuperuser
+
+You will be prompted to enter your username, after which you will be asked for an email
+and then password and a confirmation of the password.
+
+
+After this you should get a message like this:
+
+Superuser created successfully.
+
+#####################################################################################
+
+re run your serve:
+
+python3 manage.py runserver
+
+and  visit in your browser:
+
+
+http://127.0.0.1:8000/admin
+
+Login with your credentials that you just created.
+
+CONGRATULATIONS AGAIN !!!
+
+You have successfully created an app, create a custom user management model,
+registered it and created yourself as a superuser of the site.
+
+These are the harder parts, the rest will be fun.
+
+
+#################################################################################################
+
+#################################################################################################
