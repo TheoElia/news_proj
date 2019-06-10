@@ -1,0 +1,202 @@
+#################################################################################################
+                                        Tutorial DAY 4
+#################################################################################################
+NOTE: Specific file names with their folders are written above some code snippets, make sure not to copy
+that as part of the codes. They usually appear in this format accounts/admin.py:
+
+I promised we will be working the beauty of our homepage. We will be using CSS and JS to achieve
+that. However, we will not write our own CSS and JS from scratch since that is not the focus here.
+
+We will use a fremework called materialize (it has CSS and JS already defined for us.)
+
+All we need now is to get those files and then start applyting their various classes.
+
+#################################################################################################
+
+Now, go to your project and create a folder in the root directory called static. It means as
+soon as your news_proj folder is opened, there should be a static folder in together with 
+the accounts and the news_proj folder which is in the root news_proj project folder.
+
+Within the static folder, create two folders:
+
+css
+js 
+images
+
+within the css folder create a file and name it materialize.css and create another file within the
+js folder and name it materialize.js
+
+Please visit this url https://www.pywe.org/static/css/materialize.css and copy all that is 
+diaplyed on the page and paste in materialize.css
+
+Please visit this url https://www.pywe.org/static/js/materialize.js and copy all that is 
+diaplyed on the page and paste in materialize.js
+
+materialize.js depends on jquery, it is also another Javascript fremawork.
+
+create another file within the js folder and name it jquery.min.js
+
+Please visit this url https://www.pywe.org/static/js/jquery.min.js and copy all that is 
+diaplyed on the page and paste in jquery.min.js
+
+#################################################################################################
+
+In the beginning of our django course, I made you install whitenoise, remember?. That is what will
+help us load all the files we just created and images.
+
+In order to enable this functionality, please go to settings.py and let's make some changes to 
+our middlewares.
+
+In your settings.py file, this is how your middleware is looking now:
+
+
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+We are editing it to this:
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    # added whitenoise here:
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+#################################################################################################
+
+Now let us head over to our index.html and make some changes that will help our homepage become
+a bit more presentable.
+
+Currently, index.html looks like this:
+
+accounts/templates/accounts/index.html:
+
+<html>
+    <head>
+        <title>Our News</title>
+    </head>
+    <body>
+        <header>
+        </header>
+        <main>
+            <h3>Welcome to Awesome News</h3>
+            <p>You are at the right place for your latest and hottest news!. We report as it happens.</p>
+        </main>
+    </body>
+</html>
+
+#################################################################################################
+
+Now we shall make the following changes:
+
+Include link tags to our resource files, include mobile responsiveness.
+
+We shall also apply some simple classes from materialize to our page and see the effects on our page.+
+
+
+So your new index.html should look this way:
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Enjoy the best news.">
+        <meta name="author" content="PywE">
+        <title>Our News</title>
+        <link rel="stylesheet" href="/static/css/materialize.css">
+    </head>
+    <body>
+        <header>
+        </header>
+        <main>
+            <h3 class="card-panel purple white-text center-align z-depth-5">Welcome to Awesome News</h3>
+            <div class="container">
+                <p>You are at the right place for your latest and hottest news!. We report as it happens.</p>
+            </div>
+        </main>
+    <script type="text/javasceript" src="/static/js/jquery.min.js" ></script>
+    <script type="text/javasceript" src="/static/materialize.js" ></script>
+    </body>
+    
+</html>
+
+#################################################################################################
+
+The changes we have made are apparent, we added all the files we created, we also made sure our page
+description was set and then we configured the viewport to take the device width. This is to make sure
+our app works well on all devices in terms of appearance.
+
+JS FILES BEFORE </BODY> tag
+
+JS files were loaded before the </body> and not in the head so that our page will load faster.
+All fiies in the head tag will have to finish loading before our page comes to life.
+
+And since our JS is usually to listen to events such as clicks, it will be wise to load them
+after all elements to be clicked are loaded.
+
+materialize classes
+
+We also added some materialize classes. The card-panel class gives a card background.
+We added color purple and made the text white. The z-depth, which literally raises the card 
+by putting shadow under it was set to 5, which is the highest within this framework.
+
+Some more configurations at settings.py
+
+Go to settings.py and add this line of code on its own line, anywhere, preferably the bottom of the file.
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+Also look for this:
+
+DEBUG = True
+
+It is at the top part of the settings.py file and change it to:
+
+DEBUG = False
+
+
+After making those changes, open your console or terminal and enter your project and let's runserver.
+
+On windows:
+
+python manage.py runserver 
+
+
+On Linux:
+
+python3 manage.py runserver
+
+Now visit: http://127.0.0.1:8000/
+
+You should receive an error while trying to load the page. That is because our DEBUG = False and
+we have not specified the hosts that are allowed to access our project.
+
+So long as DEBUG is False, our project will be assumed to be in production mode, this means not every
+host should be allowed to access it, security wise.
+
+To however override such security behaviour which is a good one but for our purposes we would like 
+to diable it, change ALLOWED_HOSTS = [] to ALLOWED_HOSTS = ['*']
+
+This can be found in settings.py after the DEBUG = False
+
+#################################################################################################
+
+To learn how to use materialize, plese visit:
+http://www.freetimelearning.com/materialize-css-tutorial.php
+
+#################################################################################################
+                                        CONTINUES
+#################################################################################################
