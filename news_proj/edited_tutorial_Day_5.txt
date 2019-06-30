@@ -1,0 +1,244 @@
+#################################################################################################
+                                        Tutorial DAY 5
+#################################################################################################
+NOTE: Specific file names with their folders are written above some code snippets, make sure not to copy
+that as part of the codes. They usually appear in this format accounts/admin.py:
+
+Welcome back, previously we worked on the homepage and put our house in a it of order for further
+development work.
+
+But before moving forward, let's highlight how far we have come or are supposed to have come
+in this tutorial series.
+
+* Environment setup and preparation for django project.
+* Created a new django prject and ran it.
+* Wrote our first django model
+* Made a custom user model
+* Performed django migrations 
+* Wrote our first url
+* Wrote our first view
+* Created HTML templates and connected to our project
+* Setup static assets for our project
+* Rendered our homepage with its static assets
+
+If you have completed all of that, then congratulations, you can follow the rest of
+the tutorial, if you have not I will encourage you to do these.
+
+#################################################################################################
+
+Continuing from where we left off: Now our aim is to write more views that will display and collect
+data from our clients, like registration of our clients and a site to enable our news providers to
+create content.
+
+This can be quite easy and straight forward in django with the right approach.
+
+The Right approach
+
+We will define our news model, migrate it and send it over to our HTML template.
+Here, we will not be creating HTML forms ourselves, django will do all that for us
+using the model we will define and a file known as forms.py
+
+Django has a norm, you can have one django project with numerous apps in it,
+each app taking care of one part of the project.
+
+For instance, since we shall be displaying and creating news, we shall have an app
+in our project called news.
+
+For now, let's focus on the registration. If you do not have a forms.py file in your accounts
+folderm please create one now. If you aleady do then let's head over there.
+
+accounts/forms.py:
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import CustomUser
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        # specify fields you want to show in HTML form here
+        # Other necessary field for registering a user may
+        # automatically included by django
+        # This happens with user creation forms
+        fields = ('username', 'email')
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        # specify fields you want to show in HTML form here
+        fields = ('username', 'email' )
+
+In the above we basically told what fields we would like our HTML form to display
+and we also referred to the CustomUser model we created earlier. This will help
+django make fields that we set their blank = False to required in HTML among Other
+validations. 
+
+The heavy lifting is all done for us. You will soon see it at work with a line 
+or two of codes in your user creation page
+
+#################################################################################################
+
+We shall now imprt the classes we just wrote in the view.py file in order to pass it over 
+to our HTML template.
+
+accounts/views.py:
+
+from django.shortcuts import render
+from django.views.generic import ListView
+from .forms import CustomUserCreationForm
+
+# Create your views here.
+def index(request):
+    template_name = "accounts/index.html"
+    return render(request,template_name)
+
+class CreateUserView(ListView):
+    form_class = CustomuserCreationForm
+    template_name = 'accounts/signup.html'
+
+    def get(self, request):
+        form = self.form_class
+        args = {'form': form,'title':'Register'}
+        return render(request,self.template_name,args)
+
+
+In the above, we have imported ListView, and our forms from forms.py
+
+We then created class-based view to handle our user registration. A class based view
+is a bit different from a function based view. A function based view is what we wrote
+earlier for the index, a classs based view however can include other functions.
+
+In the above one, we include a method called get, this method handle what happens when
+a user makes a get request to our signup page. That is, what will happen if the user 
+tries to GET our signup page. 
+
+We will basically like to show the user the signup page. So we imported our CustomUserCreationForm
+and made it the form_class of the class-based view and then passed it over to our template 
+in the args dictionary.
+
+We will see it's effect on the other side: the actual HTML page that will display the
+form to the user.
+
+Let's create an HTML page in our templates/accounts folder and name it signup.html (Why?,
+Because in out class based view we told django that our template resides in accounts/signup.html)
+
+accounts/templates/accounts/signup.html:
+
+<h2>Signup Here</h2>
+    {{form.as_p}}
+
+That's all we need to get a signup form with its own validation.
+#################################################################################################
+
+These are the things we did so far:
+
+*We created a forms.py file and defined what fields our form should show our users.
+Even though we specified only username and email, django will also render other fields
+that are necesssary, this is an exception for user models.
+ 
+* We added a new class to our views.py file, which is a class-based view 
+unlike the function based view we worked on earlier and imported our class from 
+the forms.py.
+
+
+* We then went on to call the class-based view in our urls.py file in order to specify
+where our users will go to see that particular view.
+
+* We then created our HTML template which will be presented to our users.
+
+Now run your project. I will not repeat how you can run your project so that you can try it all 
+on your own.
+
+Now visit http://127.0.0.1:8000/signup
+
+You should get a 404 error. Which means the project cannot find all that we did.
+
+Why?
+
+Well, remember this "Django has a norm, you can have one django project with numerous apps in it,
+each app taking care of one part of the project."?4
+
+Now accounts is an app in our news project. So the project need to be told about changes we make in our 
+various apps if we want the project to display the new changes we made.
+
+By now, you should have noticed that there is a urls.py file which is where settings.py
+file is and you also have another urls.py file in the accounts folder.
+
+You guessed right, the one near settings.py file is for the project and every app we shall create
+will also have their own.
+
+Elegant, right?
+
+So in a django project, when a user makes a request to a url (for example http://127.0.0.1:8000/), 
+the project urls.py file will be the first to know, 
+and then it will either dispatch the request to an approriate app in the project
+or handle it right there.
+
+We did something similar for our homepage. Go and take a look to really understand. We specified 
+in the project's urls.py file that when a request is made to the home directory of our project
+which was represented by '', the request should be dispatched to accounts.urls to handle. 
+That's what you see here:  
+
+path('',include('accounts.urls'))
+
+And in the accounts/urls.py file we specified that when the request comes to the homepage,
+the index view found in the views.py file should be called.
+
+That's what you see here:
+
+path('',views.index,name="home"),
+
+In the index view, we specified that, the HTML template at index.html should be shown to the user.
+
+That's the general flow right there.
+#################################################################################################
+
+So now, let's tell our project that a request coming to /signup should be dispacthed to accounts.urls.
+
+NB: accounts.urls is the same as accounts/urls.py.
+
+So add this new line to the project's urls.py:
+
+path('signup/',include('accounts.urls'))
+
+news_proj/urls.py:
+
+"""news_proj URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include('accounts.urls')),
+    path('signup/',include('accounts.urls'))
+]
+
+
+Now, run your project again and go to the browser and refresh.
+
+You should see the signup form being rendered.
+
+We shall continue with handling what happens when the fills the form and posts it,
+and also make the page more beautiful.
+
+Assignment: Please make the signpage better looking.
+
+#################################################################################################
+                                        CONTINUES
+#################################################################################################
