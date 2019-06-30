@@ -247,7 +247,7 @@ from accounts import views
 
 urlpatterns = [
 path('',views.index,name="home"),
-path('signup', views.CreateUserView.as_view(), name='signup'),
+path('signup/', views.CreateUserView.as_view(), name='signup'),
 ]
 
 So now, the project is aware to send any request coming to ip:port/signup to accounts/urls.py

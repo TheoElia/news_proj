@@ -1,0 +1,442 @@
+#################################################################################################
+                                        Tutorial DAY 6
+#################################################################################################
+NOTE: Specific file names with their folders are written above some code snippets, make sure not to copy
+that as part of the codes. They usually appear in this format:
+accounts/admin.py:
+
+Previously on this Tutorial, we added a signup page and I promised we shall work on how to
+handle what happens when a user fills the form and also beautify our signup page a bit.
+
+Let's move on to it:
+
+Please activate your virtual environment and navigate to the project in the command line.
+
+Run your server and navigate your browser to ip:port/signup, 
+this is just to check everything is working as we left it.
+
+Now, open your project in your editor and move to accounts/views.py. Our aim is to handle what happens
+when a user fills the form.
+
+This is how that file should be looking right now:
+
+from django.shortcuts import render
+from django.views.generic import ListView
+from .forms import CustomUserCreationForm
+
+
+# Create your views here.
+def index(request):
+    template_name = "accounts/index.html"
+    return render(request,template_name)
+
+class CreateUserView(ListView):
+    form_class = CustomUserCreationForm
+    template_name = 'accounts/signup.html'
+
+    def get(self, request):
+        form = self.form_class
+        args = {'form': form,'title':'Register'}
+        return render(request,self.template_name,args)
+
+#################################################################################################
+
+The get function was the one handling what happens when user requests the signup page,
+so we shall add a method called post that will handle what happens, when the user fills the form
+and clicks signup. What we basically want to do is to add this user to our CustomUser table. 
+
+So we add the following code as a new function under our CustomUserCreationForm class.
+
+    def post(self,request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            print(username)
+            password = form.cleaned_data['password1']
+            email = form.cleaned_data['email']
+            user = self.form_valid(form)
+            messages.success(request, "You have succesfully signed up")
+            return redirect('signup')
+        else:
+            messages.error(request, "There was an error processing your form")
+            return redirect('signup')
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        return user
+
+#################################################################################################
+
+Django has an in-built method called is_valid() which checks that the form was filled
+well so we only use that function to check if the form was filled well. It returns a True or 
+a False, so it is pretty straight forward.
+
+We also wrote another function called form_valid in which we chose not to save the user to 
+the database just yet (with commit=False), we however did that with user.save()
+
+Now in case we want to have access to the fields that the user filled by ourselves then django
+provides another elegant way of getting a cleaned_data from the form, so form.cleaned_data
+is a dictionary containing all the fields the user filled as dictionary keys with 
+their respective contents as values.
+
+So as seen from above, if we wanted to get the username entered by the user, we use
+form.cleaned_data['username'], and the content entered by the user will be returned to us. It is that
+simple and powerful.
+
+I added a print(username) which will display whatever the user enters in the command line for you.
+
+We then use messages (note, you should import the messages class up there, like this: from django.contrib import messages), which also already comes with django, and has various types of messages 
+(success,warning,error,debug,info..) to tell the user that their sign up was succesfully done.
+
+We finally redirect the user to the same page that he signed up on.
+
+When there's error
+
+What if an error occurs with the form? well that's the line that the else handles, and you 
+have seen that we return messages.error with some message to the user.
+
+That is all, simple, fast and powerful.
+
+#################################################################################################
+
+So your new views.py file is as this 
+
+accounts/views.py:
+
+from django.shortcuts import render,redirect
+from django.views.generic import ListView
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+
+# Create your views here.
+def index(request):
+    template_name = "accounts/index.html"
+    return render(request,template_name)
+
+class CreateUserView(ListView):
+    form_class = CustomUserCreationForm
+    template_name = 'accounts/signup.html'
+
+    def get(self, request):
+        form = self.form_class
+        args = {'form': form,'title':'Register'}
+        return render(request,self.template_name,args)
+
+    def post(self,request):
+        form = self.form_class(request.POST,request.FILES)
+        if form.is_valid():
+            # Collecting what user entered
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            email = form.cleaned_data['email']
+            # Validating what user entered with form_valid function
+            user = self.form_valid(form)
+            # Saving the user to database
+            user.save()
+            messages.success(request, "Hello there, you have been registered")
+            return redirect('signup')
+        else:
+            messages.error(request, "There was an error processing your form")
+            return redirect('signup')
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+    def form_valid(self, form):
+        user = form.save(commit=True)
+        return user
+
+Now, you will notice that the user currently does not have any button to click on after signing up.
+
+#################################################################################################
+
+We should quickly add that to our signup.html page. Put the below code after the signup header
+
+
+
+<form>
+{{form.as_p}}
+<input type="submit" value="Register" />
+</form>
+
+So your signup.hrml is now like this
+
+accounts/templates/accounts/signup.html:
+
+<h2>Signup Here</h2>
+<form>
+    {{form.as_p}}
+    <input type="submit" value="Register" />
+</form>
+
+
+There's also another thing we need to add. Django takes security seriously, we do not want
+cross site refrence forgery (you can google and read on it) to become one of our security problems, 
+and django makes that easy witha csrf_token that checks that the form is protected. 
+So, to add this token, we simply include it our in form tag like this: {% csrf_token %}, we also need
+to tell the form that we are going to do a post request, and where that post request should go to.
+
+We use the method and action attributes to tell the form these:
+method="POST" action="/signup/, don't forget that last slash.
+
+#################################################################################################
+
+Remember in our views.py we decided to display some message?, Now we do not have anything in our 
+signup.html page that will actually display those messages to the user. The one in the views.py sends
+the appropriate message to the signup.html, but it will only show to the user if we take it and show it
+explicitly.
+
+Let's add that functionality to our signup page. We shall display it just after the <h2>Signup Here</h2> tag:
+
+This code will help:
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+
+        {% if message.tags == 'success' %}
+        <li style="color:green;">
+            {{ message }}
+        </li>
+        {% endif %}
+        {% if message.tags == 'error'%}
+         <li style="color:red;">
+            {{ message }}
+        </li>
+        {% endif %}
+
+        {% endfor %}
+    </ul>
+
+{% endif %}
+
+
+#################################################################################################
+
+So your final signup.html should look like this:
+
+<h2>Signup Here</h2>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+
+        {% if message.tags == 'success' %}
+        <li style="color:green;">
+            {{ message }}
+        </li>
+        {% endif %}
+        {% if message.tags == 'error'%}
+         <li style="color:red;">
+            {{ message }}
+        </li>
+        {% endif %}
+
+        {% endfor %}
+    </ul>
+
+{% endif %}
+<form method=POST action="/signup/">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Register" />
+</form>
+
+
+We are displaying success messages in green text and error ones in red text with basic html inline styling.
+
+
+Now visit ip:port/signup again and fill the fields and then press signup, if you get redirected to the homepage
+and do not receive anything as expected here are a few changes you can apply.
+
+Go to the project's urls.py and make sure paste this there:
+
+news_proj/urls.py:
+
+"""news_proj URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include('accounts.urls')),
+    path('signup/',include('accounts.urls'))
+]
+
+Also go to accounts urls.py and paste this code.
+
+accounts/urls.py:
+
+from django.urls import path
+from accounts import views
+
+
+urlpatterns = [
+path('',views.index,name="home"),
+path('signup/', views.CreateUserView.as_view(), name='signup'),
+]
+
+#################################################################################################
+
+Now run your project again and visit the ip:port/signup and then fill the form
+and click on register. 
+
+You should have received the confirmation message in green text.
+
+We have completed our first mission for this section. That is, to enable signup functionality.
+
+Now let us make our page a bit more presentable with materialize again.
+
+#################################################################################################
+
+Making the page presntable
+
+We have three options:
+
+1) We re-write our own input tags and button and apply classes as desired
+2) We just import materialize.css and allow materialize.css to do its own formatting
+3) We use JavaScript to search for the input tags that django has brought and apply the various
+materialize css
+
+This is what I do, I leverage the use of both materialize classes and re writing my own 
+input tags together in collaboration with django's input tags. You will see how powerful that
+can be soon. But the easiest of course is the second option. But it means you might noe have much 
+control over the looks of your form.
+
+The {{form}} in {{form.as_p}} that we had in our signup.html is actually very powerful, it allows us
+to loop though all the form fields with their errors and message tags, so we could use this to render 
+the form fields one by one and then apply our own classes to them one by one.
+
+The {% if %} tags you have seen also allows us to check for conditions, so with these two: for and if
+we are good to go.
+
+It means if you did this:
+
+{% for field in form %}
+{{field}}
+{% endfor %}
+
+#################################################################################################
+
+Each field will be rendered on the form, fields have label_tag which gives the label of that field,
+whether it's username, email, password... .
+
+So, we could check if say the label tag is equal to (==) "username" then we put a user icon there and
+if let say the label tag == "email" then we put a mail icon. Those are just some of the secnarios.
+
+So thinking through it for a while, i came up with something like this:
+
+signup.html:
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Enjoy the best news.">
+        <meta name="author" content="PywE">
+        <title>Register Here</title>
+        <link rel="stylesheet" href="/static/css/materialize.css">
+    </head>
+
+<body>
+        <header>
+
+        </header>
+    <main>
+        <h2 class="card-panel purple white-text center-align">Signup Here</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+
+                {% if message.tags == 'success' %}
+                <li style="color:green;">
+                    {{ message }}
+                </li>
+                {% endif %}
+                {% if message.tags == 'error' %}
+                <li style="color:red;">
+                    {{ message }}
+                </li>
+                {% endif %}
+
+                {% endfor %}
+            </ul>
+
+        {% endif %}
+
+    <div class="container">
+        <form method=POST action="/signup/">
+            {% csrf_token %}
+        {% for field in form %}
+        
+    
+        <div class="input-field col s12 m12 l12">
+            {{ field.help_text }}
+            <br/>
+        </div>
+    
+            <div class="input-field col s12 m12 l12">
+
+            {% if 'username' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+                <div class='error'>{{form.errors.username}}</div>
+            </div>
+            {% endif %}
+    
+            {% if 'password' in field.label_tag %}
+            <div class='error'>{{form.errors.password}}</div>
+            {% endif %}
+    
+            {% if 'Phone' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+              <div class='error'>{{form.errors.phone}}</div>
+            </div>
+            {% endif %}
+    
+            {% if 'Email' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+              <div class='error'>{{form.errors.email}}</div>
+            </div>
+            {% endif %}
+            {{ field }}
+            <label for="icon_prefix "> {{ field.label_tag }}</label>
+
+            </div>
+            {% endfor %}
+            <button type="submit" class="waves-effect waves btn purple">Sign up</button>
+        </form>
+    </div>
+    </main>
+</body>
+
+<script type="text/javasceript" src="/static/js/jquery.min.js" ></script>
+<script type="text/javasceript" src="/static/materialize.js" ></script>
+</html>
+
+There you go, you should have a signup page that is a bit more presentable than what we had at first.
+
+Visit ip:port/signup and see the differnce, register as many users as you want and visit
+ip:port/admin, login as yourself if you are required to login and under accounts click 
+users, you will see that all the users you registered are appearing there.
+
+That will be all for this section of the turorail. 
+Up Next: We shall be creating a page to login our users.
+
+
+#################################################################################################
+                                        CONTINUES
+#################################################################################################

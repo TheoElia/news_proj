@@ -1,2 +1,84 @@
-<h2>Signup Here</h2>
-    {{form.as_p}}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Enjoy the best news.">
+        <meta name="author" content="PywE">
+        <title>Our News</title>
+        <link rel="stylesheet" href="/static/css/materialize.css">
+    </head>
+
+<body>
+        <header>
+
+        </header>
+    <main>
+        <h2 class="card-panel purple white-text center-align">Signup Here</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+
+                {% if message.tags == 'success' %}
+                <li style="color:green;">
+                    {{ message }}
+                </li>
+                {% endif %}
+                {% if message.tags == 'error' %}
+                <li style="color:red;">
+                    {{ message }}
+                </li>
+                {% endif %}
+
+                {% endfor %}
+            </ul>
+
+        {% endif %}
+
+    <div class="container">
+        <form method=POST action="/signup/">
+            {% csrf_token %}
+        {% for field in form %}
+        
+    
+        <div class="input-field col s12 m12 l12">
+            {{ field.help_text }}
+            <br/>
+        </div>
+    
+            <div class="input-field col s12 m12 l12">
+
+            {% if 'username' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+                <div class='error'>{{form.errors.username}}</div>
+            </div>
+            {% endif %}
+    
+            {% if 'password' in field.label_tag %}
+            <div class='error'>{{form.errors.password}}</div>
+            {% endif %}
+    
+            {% if 'Phone' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+              <div class='error'>{{form.errors.phone}}</div>
+            </div>
+            {% endif %}
+    
+            {% if 'Email' in field.label_tag %}
+            <div class="input-field col s12" style="color:red;">
+              <div class='error'>{{form.errors.email}}</div>
+            </div>
+            {% endif %}
+            {{ field }}
+            <label for="icon_prefix "> {{ field.label_tag }}</label>
+
+            </div>
+            {% endfor %}
+            <button type="submit" class="waves-effect waves btn purple">Sign up</button>
+        </form>
+    </div>
+    </main>
+</body>
+
+<script type="text/javasceript" src="/static/js/jquery.min.js" ></script>
+<script type="text/javasceript" src="/static/materialize.js" ></script>
+</html>
