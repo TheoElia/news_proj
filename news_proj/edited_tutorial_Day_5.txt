@@ -45,7 +45,7 @@ For instance, since we shall be displaying and creating news, we shall have an a
 in our project called news.
 
 For now, let's focus on the registration. If you do not have a forms.py file in your accounts
-folderm please create one now. If you aleady do then let's head over there.
+folder please create one now. If you aleady do then let's head over there.
 
 accounts/forms.py:
 
@@ -70,17 +70,17 @@ class CustomUserChangeForm(UserChangeForm):
         # specify fields you want to show in HTML form here
         fields = ('username', 'email' )
 
-In the above we basically told what fields we would like our HTML form to display
+In the above we basically told django what fields we would like our HTML form to display
 and we also referred to the CustomUser model we created earlier. This will help
 django make fields that we set their blank = False to required in HTML among Other
 validations. 
 
 The heavy lifting is all done for us. You will soon see it at work with a line 
-or two of codes in your user creation page
+or two of codes in your user creation HTML page
 
 #################################################################################################
 
-We shall now imprt the classes we just wrote in the view.py file in order to pass it over 
+We shall now import the classes we just wrote in the view.py file in order to pass it over 
 to our HTML template.
 
 accounts/views.py:
@@ -104,15 +104,16 @@ class CreateUserView(ListView):
         return render(request,self.template_name,args)
 
 
-In the above, we have imported ListView, and our forms from forms.py
+In the above, we have imported ListView(it is a django in-built class), and our forms from forms.py
 
-We then created class-based view to handle our user registration. A class based view
+We then created a class-based view to handle our user registration. 
+A class based view
 is a bit different from a function based view. A function based view is what we wrote
 earlier for the index, a classs based view however can include other functions.
 
-In the above one, we include a method called get, this method handle what happens when
+In the above one, we include a method(function) called get, this method handles what happens when
 a user makes a get request to our signup page. That is, what will happen if the user 
-tries to GET our signup page. 
+tries to GET (or requests for) our signup page. 
 
 We will basically like to show the user the signup page. So we imported our CustomUserCreationForm
 and made it the form_class of the class-based view and then passed it over to our template 
@@ -122,7 +123,10 @@ We will see it's effect on the other side: the actual HTML page that will displa
 form to the user.
 
 Let's create an HTML page in our templates/accounts folder and name it signup.html (Why?,
-Because in out class based view we told django that our template resides in accounts/signup.html)
+Because in our class-based view we told django that our template resides in accounts/signup.html
+when we specified the template_name to be accounts/signup.html above)
+
+The magical HTML page
 
 accounts/templates/accounts/signup.html:
 
@@ -158,7 +162,7 @@ You should get a 404 error. Which means the project cannot find all that we did.
 Why?
 
 Well, remember this "Django has a norm, you can have one django project with numerous apps in it,
-each app taking care of one part of the project."?4
+each app taking care of one part of the project."?
 
 Now accounts is an app in our news project. So the project need to be told about changes we make in our 
 various apps if we want the project to display the new changes we made.
@@ -173,7 +177,7 @@ Elegant, right?
 
 So in a django project, when a user makes a request to a url (for example http://127.0.0.1:8000/), 
 the project urls.py file will be the first to know, 
-and then it will either dispatch the request to an approriate app in the project
+and then it will either dispatch(resend) the request to an approriate app in the project
 or handle it right there.
 
 We did something similar for our homepage. Go and take a look to really understand. We specified 
@@ -195,11 +199,11 @@ In the index view, we specified that, the HTML template at index.html should be 
 That's the general flow right there.
 #################################################################################################
 
-So now, let's tell our project that a request coming to /signup should be dispacthed to accounts.urls.
+So now, let's tell our project that a request coming to ip:port/signup should be dispacthed to accounts.urls.
 
 NB: accounts.urls is the same as accounts/urls.py.
 
-So add this new line to the project's urls.py:
+So add this new line to the project's urls.py which is in the same folder as settings.py:
 
 path('signup/',include('accounts.urls'))
 
@@ -229,12 +233,35 @@ urlpatterns = [
     path('signup/',include('accounts.urls'))
 ]
 
+After telling the project about where to send any request coming to ip:port/signup, now we 
+need to go over there(accounts/urls) and actually handle what should happen when the request comes
+
+You should add this to your existing acoounts.urls file:
+path('signup', views.CreateUserView.as_view(), name='signup'),
+
+accounts/urls.py:
+
+from django.urls import path
+from accounts import views
+
+
+urlpatterns = [
+path('',views.index,name="home"),
+path('signup', views.CreateUserView.as_view(), name='signup'),
+]
+
+So now, the project is aware to send any request coming to ip:port/signup to accounts/urls.py
+and accoun'/urls.py knows that it should call the CustomUserCreationForm as a view and the
+CustomUserCreationForm as a view also knows that it should show the HTML page located at
+accounts/signup.html.
+
+The flow is that simple.
 
 Now, run your project again and go to the browser and refresh.
 
 You should see the signup form being rendered.
 
-We shall continue with handling what happens when the fills the form and posts it,
+We shall continue with handling what happens when a user fills the form and posts it,
 and also make the page more beautiful.
 
 Assignment: Please make the signpage better looking.
